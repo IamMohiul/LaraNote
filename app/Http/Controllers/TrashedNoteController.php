@@ -17,7 +17,26 @@ class TrashedNoteController extends Controller
         if(!$note->user->is(Auth::user())){
             abort(403, "You don't have permission");
         }
-        
+
         return view('notes.show')->with('note', $note);
+    }
+
+    public function restore(Note $note){
+        if(!$note->user->is(Auth::user())){
+            abort(403, "You don't have permission");
+        }
+
+        $note->restore();
+
+        return to_route('notes.show', $note)->with('success', 'Note Restored Successfully');
+    }
+
+    public function destroy(Note $note){
+        if(!$note->user->is(Auth::user())){
+            abort(403, "You don't have permission");
+        }
+        $note->forceDelete();
+
+        return to_route('trashed.index')->with('success', 'Deleted Forever.');
     }
 }
